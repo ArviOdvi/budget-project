@@ -4,12 +4,11 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class App 
-{
+public class App {
     static final BudgetService budgetService = new BudgetService();
 
-    public static void main( String[] args )
-    {
+    public static void main(String[] args) {
+
         final IncomeRecord incomeRecord = new IncomeRecord(
                 BigDecimal.valueOf(1500), "Salary", LocalDateTime.now(), true, null);
         final IncomeRecord incomeRecordCash = new IncomeRecord(
@@ -19,11 +18,34 @@ public class App
         final ExpenseRecord expenseRecordCash = new ExpenseRecord(
                 BigDecimal.valueOf(800), "New bike", LocalDateTime.now(), PaymentMethodType.CASH);
         final Budget budget = new Budget(budgetService);
-        budgetService.setIncomeRecord(incomeRecord);
-        budgetService.setExpenseRecords(expenseRecord);
-        budgetService.setIncomeRecord(incomeRecordCash);
-        budgetService.setExpenseRecords(expenseRecordCash);
-        budget.balance();
+        while (true) {
+            switch (Meniu.meniu()) {
+                case 1: {
+                    budgetService.setIncomeRecord(incomeRecord);
+                    budgetService.setIncomeRecord(incomeRecordCash);
+                    break;
+                }
+                case 2: {
+                    budgetService.setExpenseRecords(expenseRecord);
+                    budgetService.setExpenseRecords(expenseRecordCash);
+                    break;
+                }
+                case 3: {
+                    System.out.println(budget.displayIncome());
+                    break;
+                }
+                case 4: {
+                    System.out.println(budget.displayExpenses());
+                    break;
+                }
+                case 5: {
+                    budget.balance();
+                    break;
+                }
+                case 6:
+                    return;
+            }
+        }
     }
 
     private static void printIncomeRecords() {
