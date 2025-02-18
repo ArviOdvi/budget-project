@@ -1,15 +1,17 @@
 package com.budget.my;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Scanner;
 
 public class App {
 
 
-    public static void main(String[] args) {
 
-        Meniu.meniu();
+    public static void main(String[] args) {
+        // BudgetService budgetService = new BudgetService();
+        Scanner scanner = new Scanner(System.in);
+
+        Meniu meniu = new Meniu(scanner);
+        meniu.meniu();
 
     }
 
