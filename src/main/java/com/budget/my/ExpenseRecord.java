@@ -18,13 +18,6 @@ public class ExpenseRecord {
         this.paymentMethod = paymentMethod;
         this.bankCard = bankCard;
     }
-    public ExpenseRecord(final BigDecimal amount, final String category, final LocalDateTime date, final PaymentMethodType paymentMethod) {
-        this.amount = amount;
-        this.category = category;
-        this.date = date;
-        this.paymentMethod = paymentMethod;
-        this.bankCard = null;
-    }
     public BigDecimal getAmount() {
         return amount;
     }
