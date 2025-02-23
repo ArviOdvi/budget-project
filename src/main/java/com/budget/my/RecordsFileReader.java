@@ -13,11 +13,11 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class RecordsFileReader {
-
+    BudgetService budgetService;
+    Integer counter;
     RecordsFileWriter recordsFileWriter = new RecordsFileWriter();
     private final TypeAdapter<LocalDateTime> localDateTimeAdapter = new TypeAdapter<LocalDateTime>() {
         private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"); // Jūsų datos/laiko formatas
@@ -43,19 +43,29 @@ public class RecordsFileReader {
             }
         }
     };
-
     private final Gson gson = new GsonBuilder()
             .registerTypeAdapter(LocalDateTime.class, localDateTimeAdapter)
             .setPrettyPrinting()
             .create();
-    public List<IncomeRecord> loadIncomeRecords(String fileName, List<IncomeRecord> incomeRecords) {
+
+    public RecordsFileReader(Integer counter, BudgetService budgetService) {
+        this.budgetService = budgetService;
+        this.counter = counter;
+    }
+
+    public Map<Integer, List<IncomeRecord>> loadIncomeRecords(String fileName, Map<Integer,List<IncomeRecord>> incomeRecords) {
         File file = new File(fileName);
         if (file.exists()) {
             try (FileReader fileReader = new FileReader(fileName)) {
-                Type listType = new TypeToken<ArrayList<IncomeRecord>>() {}.getType();
-                List<IncomeRecord> loadedRecords = gson.fromJson(fileReader, listType);
-                if (loadedRecords != null) {
-                    incomeRecords.addAll(loadedRecords);
+                Type mapType = new TypeToken<HashMap<Integer, List<IncomeRecord>>>() {}.getType();
+                Map<Integer, List<IncomeRecord>> loadedRecords = gson.fromJson(fileReader, mapType);
+                if (loadedRecords != null && loadedRecords.isEmpty()) {
+                    incomeRecords.putAll(loadedRecords);
+                    budgetService.setCounter(0);
+                    return incomeRecords;
+                } else {
+                    incomeRecords.putAll(loadedRecords);
+                    budgetService.setCounter(Collections.max(loadedRecords.keySet()));
                     return incomeRecords;
                 }
             } catch (IOException e) {
@@ -67,7 +77,8 @@ public class RecordsFileReader {
                 if (file.createNewFile()) { // Sukuriame failą
                     System.err.println("Failas " + fileName + " sėkmingai sukurtas.");
                     // Čia galite pridėti pradinius pajamų įrašus į naują failą, jei reikia
-                    recordsFileWriter.saveIncomeRecords(fileName, incomeRecords); // Išsaugome tuščią sąrašą, kad failas būtų paruoštas
+                    recordsFileWriter.saveIncomeRecords(fileName, incomeRecords);
+                    // Išsaugome tuščią sąrašą, kad failas būtų paruoštas
                 } else {
                     System.err.println("Nepavyko sukurti failo " + fileName);
                 }

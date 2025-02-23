@@ -2,6 +2,7 @@ package com.budget.my;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 public class Budget {
     private final BudgetService budgetService;
@@ -20,9 +21,11 @@ public class Budget {
     }
     public BigDecimal displayIncome() {
         incomeAmount = BigDecimal.ZERO;
-        List<IncomeRecord> incomes = budgetService.getIncomeRecords();
-        for (IncomeRecord income : incomes) {
-            incomeAmount = incomeAmount.add(income.getAmount());
+        Map<Integer, List<IncomeRecord>> incomes = budgetService.getIncomeRecords();
+        for (List<IncomeRecord> incomeRecordList : incomes.values()) {
+            for (IncomeRecord incomeRecord : incomeRecordList) { // Iterate through each IncomeRecord in the list
+                incomeAmount = incomeAmount.add(incomeRecord.getAmount());
+            }
         }
         return incomeAmount;
     }

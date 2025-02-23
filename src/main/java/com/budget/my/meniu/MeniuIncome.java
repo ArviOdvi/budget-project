@@ -2,16 +2,16 @@ package com.budget.my.meniu;
 
 import com.budget.my.BudgetService;
 import com.budget.my.IncomeRecord;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class MeniuIncome {
     private final Scanner scanner;
-
     private final BudgetService budgetService;
-
     public MeniuIncome(Scanner scanner, BudgetService budgetService) {
         this.scanner = scanner;
         this.budgetService = budgetService;
@@ -31,7 +31,7 @@ public class MeniuIncome {
                 scanner.next(); // Išvalome neteisingą įvestį
                 continue;  // Pereiname prie naujo ciklo
             }
-            choice = scanner.nextInt();
+            choice =   scanner.nextInt();
             switch (choice) {
                 case 1: {
                     transferIncomeRecord();
@@ -54,14 +54,19 @@ public class MeniuIncome {
     public void transferIncomeRecord() {
         System.out.println("Prašome įvesti pajamas:");
         BigDecimal amount = scanner.nextBigDecimal();
+        scanner.nextLine();
         System.out.println("Ar tai darbo užmokestis(T/N):");
         String incomeType = scanner.nextLine();
         String category = "Other";
         if ("T".equalsIgnoreCase(incomeType)) {
             category = "Salary";
         }
+        Integer counter = budgetService.getCounter()+1;
+        budgetService.setCounter(counter);
         final IncomeRecord incomeRecord = new IncomeRecord(
                 amount, category, LocalDateTime.now(), true, null);
-        budgetService.setIncomeRecord(incomeRecord);
+        Map<Integer, List<IncomeRecord>> incomeRecords = budgetService.getIncomeRecords();
+        incomeRecords.putIfAbsent(counter, new ArrayList<>());
+        incomeRecords.get(counter).add(incomeRecord);
     }
 }

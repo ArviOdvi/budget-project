@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
+
 public class RecordsFileWriter {
     private final TypeAdapter<LocalDateTime> localDateTimeAdapter = new TypeAdapter<LocalDateTime>() {
         private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"); // Jūsų datos/laiko formatas
@@ -40,7 +42,7 @@ public class RecordsFileWriter {
             .registerTypeAdapter(LocalDateTime.class, localDateTimeAdapter)
             .setPrettyPrinting()
             .create();
-       public void saveIncomeRecords(String fileName, List<IncomeRecord> incomeRecords) {
+       public void saveIncomeRecords(String fileName, Map<Integer, List<IncomeRecord>> incomeRecords) {
        try (FileWriter writer = new FileWriter(fileName)) {
             gson.toJson(incomeRecords, writer);
         } catch (IOException e) {
