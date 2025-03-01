@@ -2,51 +2,57 @@ package com.budget.my;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
-public class ExpenseRecord {
-    private final BigDecimal amount;
-    private final String category;
-    private final LocalDateTime date;
-    private final PaymentMethodType paymentMethod;
-    private final BankCard bankCard;
+public class ExpenseRecord extends CommonRecord {
+    private String expenseCategory;
+    private String expenseType;
 
-    public ExpenseRecord(final BigDecimal amount, final String category, final LocalDateTime date, final PaymentMethodType paymentMethod,
-                         final BankCard bankCard) {
-        this.amount = amount;
-        this.category = category;
-        this.date = date;
-        this.paymentMethod = paymentMethod;
-        this.bankCard = bankCard;
-    }
-    public BigDecimal getAmount() {
-        return amount;
+    public void setExpenseCategory(String expenseCategory) {
+        this.expenseCategory = expenseCategory;
     }
 
-    public String getCategory() {
-        return category;
+    public void setExpenseType(String expenseType) {
+        this.expenseType = expenseType;
     }
 
-    public LocalDateTime getDate() {
-        return date;
+    public ExpenseRecord(int id, BigDecimal amount, LocalDateTime date, String otherInfo, String expenseCategory, String expenseType) {
+        super(id, amount, date, otherInfo);
+        // Validacija naujiems laukams
+        if (expenseCategory == null || expenseCategory.isBlank()) {
+            throw new IllegalArgumentException("Pajamos kategorija negali būti tuščia.");
+        }
+        if (expenseType == null || expenseType.isBlank()) {
+            throw new IllegalArgumentException("Pajamų tipas negali būti tuščias.");
+        }
+        this.expenseCategory = expenseCategory;
+        this.expenseType = expenseType;
     }
 
-    public PaymentMethodType getPaymentMethod() {
-        return paymentMethod;
+    public String getExpenseCategory() {
+        return expenseCategory;
     }
 
-    public BankCard getBankCard() {
-        return bankCard;
+    public String getExpenseType() {
+        return expenseType;
+    }
+    @Override
+    public int hashCode() {
+        int result = super.hashCode(); // Svarbu įtraukti ir tėvinės klasės hashCode()
+        result = 31 * result + Objects.hash(expenseCategory);
+        result = 31 * result + Objects.hash(expenseType);
+        return result;
     }
 
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("ExpenseRecord{");
-        sb.append("amount=").append(amount);
-        sb.append(", category='").append(category).append('\'');
-        sb.append(", date=").append(date);
-        sb.append(", paymentMethod=").append(paymentMethod);
-        sb.append(", bankCard=").append(bankCard);
-        sb.append('}');
-        return sb.toString();
+        return "IncomeRecord{" +
+                "id=" + getId() + // Naudojame getter'į iš tėvinės klasės
+                ", amount=" + getAmount() +
+                ", date=" + getDate() +
+                ", otherInfo='" + getOtherInfo() + '\'' +
+                ", incomeCategory='" + expenseCategory + '\'' +
+                ", incomeType='" + expenseType + '\'' +
+                '}';
     }
 }

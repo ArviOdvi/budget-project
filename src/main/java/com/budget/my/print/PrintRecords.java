@@ -1,4 +1,7 @@
-package com.budget.my;
+package com.budget.my.print;
+
+import com.budget.my.BudgetService;
+import com.budget.my.CommonRecord;
 
 import java.util.List;
 import java.util.Map;
@@ -11,10 +14,10 @@ public class PrintRecords {
     }
 
     private void printIncomeRecords() {
-        Map<Integer, List<IncomeRecord>> incomesMap = budgetService.getIncomeRecords();
-        for (List<IncomeRecord> incomeRecordsList : incomesMap.values()) {  // Iterate through the *values* (lists)
-            for (IncomeRecord incomeRecord : incomeRecordsList) { // Iterate through each IncomeRecord in the list
-                System.out.println(incomeRecord);
+        Map<Integer, List<CommonRecord>> incomesMap = budgetService.getCommonRecords();
+        for (List<CommonRecord> incomeRecordsList : incomesMap.values()) {  // Iterate through the *values* (lists)
+            for (CommonRecord incomeCommonRecord : incomeRecordsList) { // Iterate through each IncomeRecord in the list
+                System.out.println(incomeCommonRecord);
             }
         }
     }

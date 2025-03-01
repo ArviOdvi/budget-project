@@ -1,16 +1,13 @@
 package com.budget.my.meniu;
 
-import com.budget.my.BudgetService;
-import com.budget.my.ExpenseRecord;
-import com.budget.my.PaymentMethodType;
+import com.budget.my.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Scanner;
+import java.util.*;
 
 public class MeniuExpence {
     private final Scanner scanner;
-
     private final BudgetService budgetService;
 
     public MeniuExpence(Scanner scanner, BudgetService budgetService) {
@@ -53,6 +50,7 @@ public class MeniuExpence {
         }
     }
     public void transferExpenceRecord() {
+        UUID uuid = UUID.randomUUID();
         System.out.println("Prašome įvesti išlaidas:");
         BigDecimal amount = scanner.nextBigDecimal();
         scanner.nextLine();
@@ -62,8 +60,12 @@ public class MeniuExpence {
         if ("T".equalsIgnoreCase(expenceType)) {
             category = "Salary";
         }
-        final ExpenseRecord expenseRecord = new ExpenseRecord(
-                amount, category, LocalDateTime.now(), PaymentMethodType.CARD, null);
-        budgetService.setExpenseRecord(expenseRecord);
+        int counter = budgetService.getCounter()+1;
+        budgetService.setCounter(counter);
+        final ExpenseRecord expenseRecord = new ExpenseRecord(uuid.hashCode(),  amount,
+                LocalDateTime.now(), "",category, "cash");
+        Map<Integer, List<CommonRecord>> expenseRecords = budgetService.getCommonRecords();
+        expenseRecords.putIfAbsent(counter, new ArrayList<>());
+        expenseRecords.get(counter).add(expenseRecord);
     }
 }

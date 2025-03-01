@@ -1,5 +1,8 @@
-package com.budget.my;
+package com.budget.my.fileoperations;
 
+import com.budget.my.BudgetService;
+import com.budget.my.CommonRecord;
+import com.budget.my.ExpenseRecord;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
@@ -17,7 +20,7 @@ import java.util.*;
 
 public class RecordsFileReader {
     BudgetService budgetService;
-    Integer counter;
+    int counter;
     RecordsFileWriter recordsFileWriter = new RecordsFileWriter();
     private final TypeAdapter<LocalDateTime> localDateTimeAdapter = new TypeAdapter<LocalDateTime>() {
         private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"); // Jūsų datos/laiko formatas
@@ -45,31 +48,34 @@ public class RecordsFileReader {
     };
     private final Gson gson = new GsonBuilder()
             .registerTypeAdapter(LocalDateTime.class, localDateTimeAdapter)
+            .registerTypeAdapter(CommonRecord.class, new CommonRecordAdapter(new GsonBuilder().create()))
             .setPrettyPrinting()
             .create();
 
-    public RecordsFileReader(Integer counter, BudgetService budgetService) {
+    public RecordsFileReader(int counter, BudgetService budgetService) {
         this.budgetService = budgetService;
         this.counter = counter;
+
     }
 
-    public Map<Integer, List<IncomeRecord>> loadIncomeRecords(String fileName, Map<Integer,List<IncomeRecord>> incomeRecords) {
+    public Map<Integer, List<CommonRecord>> loadRecords(String fileName, Map<Integer, List<CommonRecord>> commonrecords) {
         File file = new File(fileName);
         if (file.exists()) {
             try (FileReader fileReader = new FileReader(fileName)) {
-                Type mapType = new TypeToken<HashMap<Integer, List<IncomeRecord>>>() {}.getType();
-                Map<Integer, List<IncomeRecord>> loadedRecords = gson.fromJson(fileReader, mapType);
-                if (loadedRecords != null && loadedRecords.isEmpty()) {
-                    incomeRecords.putAll(loadedRecords);
-                    budgetService.setCounter(0);
-                    return incomeRecords;
-                } else {
-                    incomeRecords.putAll(loadedRecords);
-                    budgetService.setCounter(Collections.max(loadedRecords.keySet()));
-                    return incomeRecords;
+                Type mapType = new TypeToken<HashMap<Integer, List<CommonRecord>>>() {}.getType();
+                Map<Integer, List<CommonRecord>> loadedRecords = gson.fromJson(fileReader, mapType);
+                if (loadedRecords != null) {
+                    if (loadedRecords.isEmpty()) {
+                        budgetService.setCounter(0);
+                        return loadedRecords;
+                    } else {
+                        System.out.println(loadedRecords);
+                        budgetService.setCounter(Collections.max(loadedRecords.keySet()));
+                        return loadedRecords;
+                    }
                 }
             } catch (IOException e) {
-                System.err.println("Klaida skaitant failą " + fileName + ": " + e.getMessage());;
+                System.err.println("Klaida skaitant failą " + fileName + ": " + e.getMessage());
             }
         } else {
             System.err.println("Failas " + fileName + " nerastas. Sukuriamas naujas failas.");
@@ -77,7 +83,7 @@ public class RecordsFileReader {
                 if (file.createNewFile()) { // Sukuriame failą
                     System.err.println("Failas " + fileName + " sėkmingai sukurtas.");
                     // Čia galite pridėti pradinius pajamų įrašus į naują failą, jei reikia
-                    recordsFileWriter.saveIncomeRecords(fileName, incomeRecords);
+                    recordsFileWriter.saveRecords(fileName, commonrecords);
                     // Išsaugome tuščią sąrašą, kad failas būtų paruoštas
                 } else {
                     System.err.println("Nepavyko sukurti failo " + fileName);
@@ -86,36 +92,6 @@ public class RecordsFileReader {
                 System.err.println("Klaida kuriant failą " + fileName);
             }
         }
-        return incomeRecords;
-    }
-    public List<ExpenseRecord> loadExpenseRecords(String fileName, List<ExpenseRecord> expenseRecords) { // Atskiras metodas failo skaitymui
-        File file = new File(fileName);
-        if (file.exists()) {
-            try (FileReader fileReader = new FileReader(fileName)) {
-                Type listType = new TypeToken<ArrayList<ExpenseRecord>>() {}.getType();
-                List<ExpenseRecord> loadedRecords = gson.fromJson(fileReader, listType);
-
-                if (loadedRecords != null) {
-                    expenseRecords.addAll(loadedRecords);
-                    return expenseRecords;
-                }
-            } catch (IOException e) {
-                System.err.println("Klaida skaitant failą " + fileName + ": " + e.getMessage());;
-            }
-        } else {
-            System.err.println("Failas " + fileName + " nerastas. Sukuriamas naujas failas.");
-            try {
-                if (file.createNewFile()) { // Sukuriame failą
-                    System.err.println("Failas " + fileName + " sėkmingai sukurtas.");
-                    // Čia galite pridėti pradinius pajamų įrašus į naują failą, jei reikia
-                    recordsFileWriter.saveExpenceRecords(fileName, expenseRecords); // Išsaugome tuščią sąrašą, kad failas būtų paruoštas
-                } else {
-                    System.err.println("Nepavyko sukurti failo " + fileName);
-                }
-            } catch (IOException e) {
-                System.err.println("Klaida kuriant failą " + fileName);
-            }
-        }
-        return expenseRecords;
+        return commonrecords;
     }
 }

@@ -1,5 +1,6 @@
-package com.budget.my;
+package com.budget.my.fileoperations;
 
+import com.budget.my.CommonRecord;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
@@ -42,16 +43,9 @@ public class RecordsFileWriter {
             .registerTypeAdapter(LocalDateTime.class, localDateTimeAdapter)
             .setPrettyPrinting()
             .create();
-       public void saveIncomeRecords(String fileName, Map<Integer, List<IncomeRecord>> incomeRecords) {
+       public void saveRecords(String fileName, Map<Integer, List<CommonRecord>> commonrecords) {
        try (FileWriter writer = new FileWriter(fileName)) {
-            gson.toJson(incomeRecords, writer);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-        public void saveExpenceRecords(String fileName, List<ExpenseRecord> expenseRecords) {
-        try (FileWriter writer = new FileWriter(fileName)) {
-            gson.toJson(expenseRecords, writer);
+            gson.toJson(commonrecords, writer);
         } catch (IOException e) {
             e.printStackTrace();
         }

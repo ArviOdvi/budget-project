@@ -2,6 +2,7 @@ package com.budget.my.meniu;
 
 import com.budget.my.Budget;
 import com.budget.my.BudgetService;
+import com.budget.my.print.DisplayIncome;
 
 import java.util.Scanner;
 public class Meniu {
@@ -10,9 +11,11 @@ public class Meniu {
     private final Budget budget;
     private final MeniuIncome meniuIncome; // Perduodame BudgetService
     private final MeniuExpence meniuExpence;
+    private final DisplayIncome displayIncome;
     public Meniu(Scanner scanner, BudgetService budgetService) {
         this.scanner = scanner;
         this.budgetService = budgetService;
+        this.displayIncome = new DisplayIncome(budgetService);
         this.budget = new Budget(budgetService);
         this.meniuIncome = new MeniuIncome(scanner, budgetService);
         this.meniuExpence = new MeniuExpence(scanner, budgetService);
@@ -47,11 +50,11 @@ public class Meniu {
                     break;
                 }
                 case 3: {
-                    System.out.println(budget.displayIncome());
+                    System.out.println(displayIncome.displayIncome());
                     break;
                 }
                 case 4: {
-                    System.out.println(budget.displayExpenses());
+                    //System.out.println(budget.displayExpenses());
                     break;
                 }
                 case 5: {
@@ -59,8 +62,7 @@ public class Meniu {
                     break;
                 }
                 case 6: {
-                    budgetService.saveIncomeRecords("income_records.json");
-                    budgetService.saveExpenceRecords("expense_records.json");
+                    budgetService.saveRecords("records.json");
                     return;
                 }
                 default: { System.out.println("Klaida! Prašome įvesti tik skaičius nuo 1 iki 6.");
