@@ -1,16 +1,16 @@
-package com.budget.my;
+package com.budget.my.records;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 public abstract class CommonRecord {
-    private final int id; // Pakeičiau į "id" pagal Java konvenciją
-    private final BigDecimal amount;
+    private final String id;
+    private BigDecimal amount;
     private final LocalDateTime date;
     private final String otherInfo;
 
-    public CommonRecord(int id, BigDecimal amount, LocalDateTime date, String otherInfo) {
+    public CommonRecord(String id, BigDecimal amount, LocalDateTime date, String otherInfo) {
         // Validacija: svarbu patikrinti įvesties parametrus
         if (amount == null) {
             throw new IllegalArgumentException("Suma negali būti null.");
@@ -28,7 +28,7 @@ public abstract class CommonRecord {
         this.otherInfo = otherInfo;
     }
 
-    public int getId() { // Getteris ID laukui
+    public String getId() { // Getteris ID laukui
         return id;
     }
 
@@ -44,12 +44,21 @@ public abstract class CommonRecord {
         return otherInfo;
     }
 
+    public void setAmount(BigDecimal amount) { // Setteris sumos laukui
+        if (amount == null) {
+            throw new IllegalArgumentException("Suma negali būti null.");
+        }
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Suma turi būti didesnė už nulį.");
+        }
+        this.amount = amount;
+    }
     @Override
     public boolean equals(Object o) { // Perrašome equals() metodą
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CommonRecord commonRecord = (CommonRecord) o;
-        return id == commonRecord.id; // Lyginame tik pagal ID
+        return id.equals(commonRecord.id); // Lyginame tik pagal ID
     }
 
     @Override

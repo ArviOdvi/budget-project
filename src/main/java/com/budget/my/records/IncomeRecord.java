@@ -1,29 +1,24 @@
-package com.budget.my;
+package com.budget.my.records;
+
+import com.budget.my.enum_data.IncomeCategory;
+import com.budget.my.enum_data.IncomeType;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class IncomeRecord extends CommonRecord {
-    private String incomeCategory;
-    private String incomeType;
+    private final IncomeCategory incomeCategory;
+    private final IncomeType incomeType;
 
-    public void setIncomeType(String incomeType) {
-        this.incomeType = incomeType;
-    }
-
-    public void setIncomeCategory(String incomeCategory) {
-        this.incomeCategory = incomeCategory;
-    }
-
-    public IncomeRecord(int id, BigDecimal amount, LocalDateTime date, String otherInfo, String incomeCategory, String incomeType) {
+    public IncomeRecord(String id, BigDecimal amount, LocalDateTime date, String otherInfo, IncomeCategory incomeCategory, IncomeType incomeType) {
         super(id, amount, date, otherInfo); // Kreipiamės į tėvinės klasės konstruktorių
 
         // Validacija naujiems laukams
-        if (incomeCategory == null || incomeCategory.isBlank()) {
+        if (incomeCategory == null || incomeCategory.toString().isBlank()) {
             throw new IllegalArgumentException("Pajamos kategorija negali būti tuščia.");
         }
-        if (incomeType == null || incomeType.isBlank()) {
+        if (incomeType == null || incomeType.toString().isBlank()) {
             throw new IllegalArgumentException("Pajamų tipas negali būti tuščias.");
         }
 
@@ -31,11 +26,11 @@ public class IncomeRecord extends CommonRecord {
         this.incomeType = incomeType;
     }
 
-    public String getIncomeCategory() {
+    public IncomeCategory getIncomeCategory() {
         return incomeCategory;
     }
 
-    public String getIncomeType() {
+    public IncomeType getIncomeType() {
         return incomeType;
     }
 

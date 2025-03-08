@@ -1,8 +1,12 @@
 package com.budget.my.fileoperations;
 
-import com.budget.my.ExpenseRecord;
-import com.budget.my.IncomeRecord;
-import com.budget.my.CommonRecord;
+import com.budget.my.enum_data.ExpenseCategory;
+import com.budget.my.enum_data.IncomeCategory;
+import com.budget.my.enum_data.ExpenseType;
+import com.budget.my.enum_data.IncomeType;
+import com.budget.my.records.ExpenseRecord;
+import com.budget.my.records.IncomeRecord;
+import com.budget.my.records.CommonRecord;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
@@ -13,10 +17,10 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public class CommonRecordAdapter extends TypeAdapter<CommonRecord> {
+public class FileRecordAdapter extends TypeAdapter<CommonRecord> {
     private final Gson gson;
 
-    public CommonRecordAdapter(Gson gson) {
+    public FileRecordAdapter(Gson gson) {
         this.gson = gson;
     }
 
@@ -25,15 +29,14 @@ public class CommonRecordAdapter extends TypeAdapter<CommonRecord> {
         in.beginObject();
         IncomeRecord incomeRecord = null;
         ExpenseRecord expenseRecord = null;
-        Integer id = null;
+        String id = null;
         BigDecimal amount = null;
         LocalDateTime date = null;
         String otherInfo = null;
-        String incomeCategory = null;
-        String incomeType = null;
-        String expenseCategory = null;
-        String expenseType = null;
-        String entry = null;
+        IncomeCategory incomeCategory = null;
+        IncomeType incomeType = null;
+        ExpenseCategory expenseCategory = null;
+        ExpenseType expenseType = null;
 
         while (in.hasNext()) {
             JsonToken token = in.peek();
@@ -41,20 +44,36 @@ public class CommonRecordAdapter extends TypeAdapter<CommonRecord> {
                 String name = in.nextName();
                 switch (name) {
                     case "incomeCategory":
-                        incomeCategory = in.nextString();
+                        try {
+                            incomeCategory = IncomeCategory.valueOf(in.nextString());
+                        } catch (IllegalArgumentException e) {
+                            in.skipValue();
+                        }
                         break;
-                    case "incomeType":
-                        incomeType = in.nextString();
+                    case "incomeType": // Ištaisome deserializavimą
+                        try {
+                            incomeType = IncomeType.valueOf(in.nextString());
+                        } catch (IllegalArgumentException e) {
+                            in.skipValue();
+                        }
                         break;
                     case "expenseCategory":
-                        expenseCategory = in.nextString();
+                        try {
+                            expenseCategory = ExpenseCategory.valueOf(in.nextString());
+                        } catch (IllegalArgumentException e) {
+                            in.skipValue();
+                        }
                         break;
-                    case "expenseType":
-                        expenseType = in.nextString();
+                    case "expenseType": // Ištaisome deserializavimą
+                        try {
+                            expenseType = ExpenseType.valueOf(in.nextString());
+                        } catch (IllegalArgumentException e) {
+                            in.skipValue();
+                        }
                         break;
                     case "id":
                         if (in.peek() != JsonToken.NULL) {
-                            id = in.nextInt();
+                            id = in.nextString();
                         } else {
                             in.nextNull();
                         }
@@ -80,13 +99,6 @@ public class CommonRecordAdapter extends TypeAdapter<CommonRecord> {
                             in.nextNull();
                         }
                         break;
-                    case "entry":
-                        if (in.peek() != JsonToken.NULL) {
-                            entry = in.nextString();
-                        } else {
-                            in.nextNull();
-                        }
-                        break;
                     default:
                         in.skipValue();
                         break;
@@ -108,6 +120,21 @@ public class CommonRecordAdapter extends TypeAdapter<CommonRecord> {
 
     @Override
     public void write(JsonWriter out, CommonRecord record) throws IOException {
-        gson.toJson(record, record.getClass(), out);
+        out.beginObject();
+        out.name("id").value(record.getId());
+        out.name("amount").value(record.getAmount());
+        out.name("date").value(record.getDate().toString());
+        out.name("otherInfo").value(record.getOtherInfo());
+
+        if (record instanceof IncomeRecord) {
+            IncomeRecord incomeRecord = (IncomeRecord) record;
+            out.name("incomeCategory").value(incomeRecord.getIncomeCategory().toString());
+            out.name("incomeType").value(incomeRecord.getIncomeType().toString());
+        } else if (record instanceof ExpenseRecord) {
+            ExpenseRecord expenseRecord = (ExpenseRecord) record;
+            out.name("expenseCategory").value(expenseRecord.getExpenseCategory().toString());
+            out.name("expenseType").value(expenseRecord.getExpenseType().toString());
+        }
+        out.endObject();
     }
 }

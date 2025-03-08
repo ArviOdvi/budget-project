@@ -1,8 +1,7 @@
 package com.budget.my.fileoperations;
 
 import com.budget.my.BudgetService;
-import com.budget.my.CommonRecord;
-import com.budget.my.ExpenseRecord;
+import com.budget.my.records.CommonRecord;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
@@ -48,7 +47,7 @@ public class RecordsFileReader {
     };
     private final Gson gson = new GsonBuilder()
             .registerTypeAdapter(LocalDateTime.class, localDateTimeAdapter)
-            .registerTypeAdapter(CommonRecord.class, new CommonRecordAdapter(new GsonBuilder().create()))
+            .registerTypeAdapter(CommonRecord.class, new FileRecordAdapter(new GsonBuilder().create()))
             .setPrettyPrinting()
             .create();
 
@@ -69,7 +68,6 @@ public class RecordsFileReader {
                         budgetService.setCounter(0);
                         return loadedRecords;
                     } else {
-                        System.out.println(loadedRecords);
                         budgetService.setCounter(Collections.max(loadedRecords.keySet()));
                         return loadedRecords;
                     }

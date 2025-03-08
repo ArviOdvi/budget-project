@@ -1,21 +1,17 @@
 package com.budget.my;
 
-import java.lang.reflect.Field;
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
+import com.budget.my.print.PrintExpenses;
+import com.budget.my.print.PrintIncomes;
 
 public class Budget {
-    private final BudgetService budgetService;
-    private BigDecimal incomeAmount;
-    private BigDecimal expenseAmount;
+    private final PrintIncomes printIncomes;
+    private final PrintExpenses printExpenses;
 
     public Budget(BudgetService budgetService) {
-
-        this.budgetService = budgetService;
+        this.printIncomes = new PrintIncomes(budgetService);
+        this.printExpenses = new PrintExpenses(budgetService);
     }
-
     public void balance(){
-       System.out.println("Balansas: " + incomeAmount.subtract(expenseAmount));
+       System.out.println("Balansas: " + printIncomes.printIncomes().subtract(printExpenses.printExpenses()) + "\n\n");
     }
 }

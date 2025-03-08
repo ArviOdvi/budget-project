@@ -1,41 +1,45 @@
-package com.budget.my;
+package com.budget.my.records;
+
+import com.budget.my.enum_data.ExpenseCategory;
+import com.budget.my.enum_data.ExpenseType;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class ExpenseRecord extends CommonRecord {
-    private String expenseCategory;
-    private String expenseType;
+    private ExpenseCategory expenseCategory;
+    private ExpenseType expenseType;
 
-    public void setExpenseCategory(String expenseCategory) {
+    public void setExpenseCategory(ExpenseCategory expenseCategory) {
         this.expenseCategory = expenseCategory;
     }
 
-    public void setExpenseType(String expenseType) {
+    public void setExpenseType(ExpenseType expenseType) {
         this.expenseType = expenseType;
     }
 
-    public ExpenseRecord(int id, BigDecimal amount, LocalDateTime date, String otherInfo, String expenseCategory, String expenseType) {
+    public ExpenseRecord(String id, BigDecimal amount, LocalDateTime date, String otherInfo, ExpenseCategory expenseCategory, ExpenseType expenseType) {
         super(id, amount, date, otherInfo);
         // Validacija naujiems laukams
-        if (expenseCategory == null || expenseCategory.isBlank()) {
+        if (expenseCategory == null) {
             throw new IllegalArgumentException("Pajamos kategorija negali būti tuščia.");
         }
-        if (expenseType == null || expenseType.isBlank()) {
+        if (expenseType == null) {
             throw new IllegalArgumentException("Pajamų tipas negali būti tuščias.");
         }
         this.expenseCategory = expenseCategory;
         this.expenseType = expenseType;
     }
 
-    public String getExpenseCategory() {
+    public ExpenseCategory getExpenseCategory() {
         return expenseCategory;
     }
 
-    public String getExpenseType() {
+    public ExpenseType getExpenseType() {
         return expenseType;
     }
+
     @Override
     public int hashCode() {
         int result = super.hashCode(); // Svarbu įtraukti ir tėvinės klasės hashCode()
