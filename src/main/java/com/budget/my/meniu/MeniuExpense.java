@@ -5,31 +5,51 @@ import com.budget.my.enum_data.ExpenseCategory;
 import com.budget.my.enum_data.ExpenseType;
 import com.budget.my.records.CommonRecord;
 import com.budget.my.records.ExpenseRecord;
+import com.budget.my.utils.UniqueIdGenerator;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
 
-public class MeniuExpence {
+public class MeniuExpense {
     private final Scanner scanner;
     private final BudgetService budgetService;
 
-    public MeniuExpence(Scanner scanner, BudgetService budgetService) {
+    public MeniuExpense(Scanner scanner, BudgetService budgetService) {
         this.scanner = scanner;
         this.budgetService = budgetService;
     }
-    public void enterExpenceRecord() {
+    public void fillExpenceRecordFields() {
+
+        String id = UniqueIdGenerator.generateUniqueId();
+        System.out.print("\033[31mPrašome įvesti išlaidas EUR: \033[0m");
+        BigDecimal amount = scanner.nextBigDecimal();
+        //amount = amount.multiply(BigDecimal.valueOf(-1));
+        ExpenseType expenseType = fillExpenceRecordTypeField();
+        ExpenseCategory expenseCategory = fillExpenceRecordCategoryField();
+        scanner.nextLine();
+        System.out.print("\033[31mJūsų komentaras(iki 20 simbolių): \033[0m");
+        String comment = scanner.nextLine();
+        comment = comment.substring(0, 20);
+        int counter = budgetService.getCounter()+1;
+        budgetService.setCounter(counter);
+        final ExpenseRecord expenseRecord = new ExpenseRecord(id,  amount,
+                LocalDateTime.now(), comment,expenseCategory, expenseType);
+        Map<Integer, List<CommonRecord>> expenseRecords = budgetService.getCommonRecords();
+        expenseRecords.putIfAbsent(counter, new ArrayList<>());
+        expenseRecords.get(counter).add(expenseRecord);
+    }
+    public ExpenseType fillExpenceRecordTypeField() {
         int choice;
         while (true) {
             System.out.println (
                     "\033[31m-------------------------------\n" +
-                    "-           IŠLAIDOS          -\n" +
-                    "-------------------------------\n" +
-                    "-     1  Iš sąskaitos         -\n" +
-                    "-     2  Kortele              -\n" +
-                    "-     3  Grynais              -\n" +
-                    "-     4  Grįžti į meniu       -\n" +
-                    "-------------------------------\n\033[0m");
+                            "-           IŠLAIDOS          -\n" +
+                            "-------------------------------\n" +
+                            "-     1  Iš sąskaitos         -\n" +
+                            "-     2  Kortele              -\n" +
+                            "-     3  Grynais              -\n" +
+                            "-------------------------------\n\033[0m");
             if (!scanner.hasNextInt()) {
                 System.out.println("Klaida! Prašome įvesti tik skaičių.");
                 scanner.next(); // Išvalome neteisingą įvestį
@@ -38,42 +58,19 @@ public class MeniuExpence {
             choice = scanner.nextInt();
             switch (choice) {
                 case 1: {
-                    fillExpenceRecordFields(ExpenseType.BANK_TRANSFER);
-                    break;
+                    return ExpenseType.BANK_TRANSFER;
                 }
                 case 2: {
-                    fillExpenceRecordFields(ExpenseType.CARD);
-                    break;
+                    return ExpenseType.CARD;
                 }
                 case 3: {
-                    fillExpenceRecordFields(ExpenseType.CASH);
-                    break;
-                }
-                case 4: {
-                    return;
+                    return ExpenseType.CASH;
                 }
                 default: {
                     System.out.println("Klaida! Prašome įvesti tik skaičius nuo 1 iki 4.");
                 }
             }
         }
-    }
-    public void fillExpenceRecordFields(ExpenseType expenseType) {
-        String id = UniqueIdGenerator.generateUniqueId();
-        System.out.print("\033[31mPrašome įvesti išlaidas EUR: \033[0m");
-        BigDecimal amount = scanner.nextBigDecimal();
-        //amount = amount.multiply(BigDecimal.valueOf(-1));
-        ExpenseCategory expenseCategory = fillExpenceRecordCategoryField();
-        scanner.nextLine();
-        System.out.print("\033[31mJūsų komentaras: \033[0m");
-        String comment = scanner.nextLine();
-        int counter = budgetService.getCounter()+1;
-        budgetService.setCounter(counter);
-        final ExpenseRecord expenseRecord = new ExpenseRecord(id,  amount,
-                LocalDateTime.now(), comment,expenseCategory, expenseType);
-        Map<Integer, List<CommonRecord>> expenseRecords = budgetService.getCommonRecords();
-        expenseRecords.putIfAbsent(counter, new ArrayList<>());
-        expenseRecords.get(counter).add(expenseRecord);
     }
     public ExpenseCategory fillExpenceRecordCategoryField(){
         int choice;

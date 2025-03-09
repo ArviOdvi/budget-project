@@ -16,6 +16,8 @@ public class BudgetService {
     public int counter;
     private final RecordsFileWriter recordsFileWriter = new RecordsFileWriter();
     private final RecordsFileReader recordsFileReader = new RecordsFileReader(counter, this);
+
+    @Setter
     @Getter
     private Map<Integer, List<CommonRecord>> commonRecords = new HashMap<>();
 
@@ -25,4 +27,5 @@ public class BudgetService {
     public void saveRecords(String filename) {
         recordsFileWriter.saveRecords(filename, commonRecords);
     }
+
 }

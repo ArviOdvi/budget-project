@@ -1,7 +1,7 @@
 package com.budget.my.meniu;
 
 import com.budget.my.enum_data.IncomeCategory;
-import com.budget.my.UniqueIdGenerator;
+import com.budget.my.utils.UniqueIdGenerator;
 import com.budget.my.enum_data.IncomeType;
 import com.budget.my.records.CommonRecord;
 import com.budget.my.BudgetService;
@@ -19,17 +19,34 @@ public class MeniuIncome {
         this.budgetService = budgetService;
 
     }
-    public void enterIncomeRecord() {
+    public void fillIncomeRecord() {
+        String id = UniqueIdGenerator.generateUniqueId();
+        System.out.print("\033[32mPrašome įvesti pajamas EUR: \033[0m");
+        BigDecimal amount = scanner.nextBigDecimal();
+        IncomeType incomeType = fillIncomeRecordTypeField();
+        IncomeCategory incomeCategory = fillIncomeRecordCategoryField();
+        scanner.nextLine();
+        System.out.print("\033[32mJūsų komentaras(iki 20 simbolių): \033[0m");
+        String comment = scanner.nextLine();
+        comment = comment.substring(0, 20);
+        int counter = budgetService.getCounter() + 1;
+        budgetService.setCounter(counter);
+        final CommonRecord incomeRecord = new IncomeRecord(id, amount,
+                LocalDateTime.now(), comment, incomeCategory, incomeType);
+        Map<Integer, List<CommonRecord>> incomeRecords = budgetService.getCommonRecords();
+        incomeRecords.putIfAbsent(counter, new ArrayList<>());
+        incomeRecords.get(counter).add(incomeRecord);
+    }
+    public IncomeType fillIncomeRecordTypeField() {
         int choice;
         while (true) {
             System.out.println(
-            "\033[32m++++++++++++++++++++++++++++++++\n" +
-                    "+           PAJAMOS            +\n" +
-                    "++++++++++++++++++++++++++++++++\n" +
-                    "+       1 Į sąskaitą           +\n" +
-                    "+       2 Grynais              +\n" +
-                    "+       3 Grįžti į meniu       +\n" +
-                    "++++++++++++++++++++++++++++++++\n\033[0m");
+                    "\033[32m++++++++++++++++++++++++++++++++\n" +
+                            "+           PAJAMOS            +\n" +
+                            "++++++++++++++++++++++++++++++++\n" +
+                            "+       1 Į sąskaitą           +\n" +
+                            "+       2 Grynais              +\n" +
+                            "++++++++++++++++++++++++++++++++\n\033[0m");
             if (!scanner.hasNextInt()) {
                 System.out.println("Klaida! Prašome įvesti tik skaičių.");
                 scanner.next(); // Išvalome neteisingą įvestį
@@ -38,37 +55,16 @@ public class MeniuIncome {
             choice =   scanner.nextInt();
             switch (choice) {
                 case 1: {
-                    fillIncomeRecordFields(IncomeType.BANK_TRANSFER);
-                    break;
+                    return IncomeType.BANK_TRANSFER;
                 }
                 case 2: {
-                    fillIncomeRecordFields(IncomeType.CASH);
-                    break;
-                }
-                case 3: {
-                    return;
+                    return IncomeType.CASH;
                 }
                 default: {
-                    System.out.println("Klaida! Prašome įvesti tik skaičius nuo 1 iki 3.");
+                    System.out.println("Klaida! Prašome įvesti tik skaičius nuo 1 iki 2");
                 }
             }
         }
-    }
-    public void fillIncomeRecordFields(IncomeType incomeType) {
-        String id = UniqueIdGenerator.generateUniqueId();
-        System.out.print("\033[32mPrašome įvesti pajamas EUR: \033[0m");
-        BigDecimal amount = scanner.nextBigDecimal();
-        IncomeCategory incomeCategory = fillIncomeRecordCategoryField();
-        scanner.nextLine();
-        System.out.print("\033[32mJūsų komentaras: \033[0m");
-        String comment = scanner.nextLine();
-        int counter = budgetService.getCounter() + 1;
-        budgetService.setCounter(counter);
-        final CommonRecord incomeRecord = new IncomeRecord(id, amount,
-                LocalDateTime.now(), comment, incomeCategory, incomeType);
-        Map<Integer, List<CommonRecord>> incomeRecords = budgetService.getCommonRecords();
-        incomeRecords.putIfAbsent(counter, new ArrayList<>());
-        incomeRecords.get(counter).add(incomeRecord);
     }
     public IncomeCategory fillIncomeRecordCategoryField(){
         int choice;

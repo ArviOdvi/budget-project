@@ -8,7 +8,7 @@ public abstract class CommonRecord {
     private final String id;
     private BigDecimal amount;
     private final LocalDateTime date;
-    private final String otherInfo;
+    private String otherInfo;
 
     public CommonRecord(String id, BigDecimal amount, LocalDateTime date, String otherInfo) {
         // Validacija: svarbu patikrinti įvesties parametrus
@@ -53,6 +53,10 @@ public abstract class CommonRecord {
         }
         this.amount = amount;
     }
+    public void setOtherInfo(String otherInfo) {
+        this.otherInfo = otherInfo;
+    }
+
     @Override
     public boolean equals(Object o) { // Perrašome equals() metodą
         if (this == o) return true;

@@ -35,13 +35,19 @@ public class PrintRecords {
                     if(record instanceof IncomeRecord){
                         IncomeRecord incomeRecord = (IncomeRecord) record;
                         System.out.printf("\033[33m| %-10d | %-18s | %-19s | %-15s |%-17s | %-19s | %-13s |\n\033[0m",
-                            key, incomeRecord.getId(), incomeRecord.getAmount(), incomeRecord.getIncomeType(),incomeRecord.getIncomeCategory(),incomeRecord.getOtherInfo(),formattedDate);
+                            key, incomeRecord.getId(), incomeRecord.getAmount(), incomeRecord.getIncomeType(),
+                                incomeRecord.getIncomeCategory(),incomeRecord.getOtherInfo(),formattedDate);
+                    } else {
+                        ExpenseRecord expenseRecord = (ExpenseRecord) record;
+                        System.out.printf("\033[33m| %-10d | %-18s | %-19s | %-15s |%-17s | %-19s | %-13s |\n\033[0m",
+                                key, expenseRecord.getId(), expenseRecord.getAmount().multiply(BigDecimal.valueOf(-1)), expenseRecord.getExpenseType(),
+                                expenseRecord.getExpenseCategory(),expenseRecord.getOtherInfo(),formattedDate);
                     }
                 }
 
             }
 
-            System.out.println("\033[33m+------------+--------------------+---------------------+-----------------+------------------+---------------------+---------------------+\033[0m");
+            System.out.println("\033[33m+------------+--------------------+---------------------+-----------------+------------------+---------------------+---------------------+\n\033[0m");
         }
     }
 }

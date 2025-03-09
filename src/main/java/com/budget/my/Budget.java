@@ -12,6 +12,6 @@ public class Budget {
         this.printExpenses = new PrintExpenses(budgetService);
     }
     public void balance(){
-       System.out.println("Balansas: " + printIncomes.printIncomes().subtract(printExpenses.printExpenses()) + "\n\n");
+       System.out.println("Balansas: " + printIncomes.printIncomes().subtract(printExpenses.printExpenses()) + "\n");
     }
 }

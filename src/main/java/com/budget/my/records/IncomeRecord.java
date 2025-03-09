@@ -8,8 +8,8 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class IncomeRecord extends CommonRecord {
-    private final IncomeCategory incomeCategory;
-    private final IncomeType incomeType;
+    private IncomeCategory incomeCategory;
+    private IncomeType incomeType;
 
     public IncomeRecord(String id, BigDecimal amount, LocalDateTime date, String otherInfo, IncomeCategory incomeCategory, IncomeType incomeType) {
         super(id, amount, date, otherInfo); // Kreipiamės į tėvinės klasės konstruktorių
@@ -27,11 +27,19 @@ public class IncomeRecord extends CommonRecord {
     }
 
     public IncomeCategory getIncomeCategory() {
+
         return incomeCategory;
     }
 
     public IncomeType getIncomeType() {
         return incomeType;
+    }
+    public void setIncomeCategory(IncomeCategory incomeCategory) {
+        this.incomeCategory = incomeCategory;
+    }
+
+    public void setIncomeType(IncomeType incomeType) {
+        this.incomeType = incomeType;
     }
 
     @Override

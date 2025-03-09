@@ -1,6 +1,10 @@
 package com.budget.my.meniu;
 
 import com.budget.my.BudgetService;
+import com.budget.my.enum_data.ExpenseCategory;
+import com.budget.my.enum_data.ExpenseType;
+import com.budget.my.enum_data.IncomeCategory;
+import com.budget.my.enum_data.IncomeType;
 import com.budget.my.print.PrintRecords;
 import com.budget.my.records.CommonRecord;
 import com.budget.my.records.ExpenseRecord;
@@ -11,15 +15,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+
+
 public class MeniuChange {
     private final BudgetService budgetService;
     private final Scanner scanner;
-
+    private final MeniuIncome meniuIncome;
+    private final MeniuExpense meniuExpense;
     private final PrintRecords printRecords;
+
     public MeniuChange(BudgetService budgetService, Scanner scanner) {
         this.budgetService = budgetService;
         this.scanner = scanner;
         this.printRecords = new PrintRecords(budgetService);
+        this.meniuIncome = new MeniuIncome(scanner,budgetService);
+        this.meniuExpense = new MeniuExpense(scanner, budgetService);
     }
     public void meniuChange(){
         boolean continueEditing = true;
@@ -38,7 +48,7 @@ public class MeniuChange {
                     System.out.print("Grįžti T/N?:  ");
                     String returnEntry = scanner.nextLine();
                     if ("T".equalsIgnoreCase(returnEntry)){
-                        continueEditing = false;;
+                        continueEditing = false;
                     }
                 }
             }
@@ -54,96 +64,62 @@ public class MeniuChange {
             if (recordList != null && !recordList.isEmpty()) {
                 CommonRecord record = recordList.get(0); // Gauname pirmą įrašą iš sąrašo
                 if (record instanceof IncomeRecord) {
-                    incomeRecordChange(selectedEntry, (IncomeRecord) record);
+                    incomeRecordChange((IncomeRecord) record);
                 } else if (record instanceof ExpenseRecord) {
-                    expenseRecordChange(selectedEntry, (ExpenseRecord) record);
+                    expenseRecordChange((ExpenseRecord) record);
                 }
             } else {
                 System.out.println("Įrašų sąrašas tuščias.");
             }
         } else {
-            System.out.println("Įrašas su raktu " + selectedEntry + " nerastas.");
+            System.out.println("Įrašas " + selectedEntry + " nerastas.");
         }
-//        IncomeCategory incomeCategory;
-//        switch (categoryChoice) {
-//            case 1:
-//                incomeCategory = IncomeCategory.SALARY;
-//                break;
-//            case 2:
-//                incomeCategory = IncomeCategory.DIVIDENDS;
-//                break;
-//            case 3:
-//                incomeCategory = IncomeCategory.TAX_RETURN;
-//                break;
-//            case 4:
-//                incomeCategory = IncomeCategory.OTHERS;
-//                break;
-//            default:
-//                System.out.println("Neteisingas pasirinkimas. Naudojama numatytoji kategorija: OTHERS");
-//                incomeCategory = IncomeCategory.OTHERS;
-//                break;
-//        }
-//        System.out.println("Jūsų komentaras: ");
-//        String comment = scanner.nextLine();
-//        int counter = budgetService.getCounter() + 1;
-//        budgetService.setCounter(counter);
-//        final CommonRecord incomeCommonRecord = new IncomeRecord(id, amount,
-//                LocalDateTime.now(), comment, incomeCategory, incomeType);
-//        Map<Integer, List<CommonRecord>> incomeRecords = budgetService.getCommonRecords();
-//        incomeRecords.putIfAbsent(counter, new ArrayList<>());
-//        incomeRecords.get(counter).add(incomeCommonRecord);
     }
     public void deleteRecord(){
-        // Pajamų kategorijos pasirinkimas
-//        System.out.println("Pasirinkite pajamų kategoriją:");
-//        System.out.println("1. Atlyginimas");
-//        System.out.println("2. Dividendai");
-//        System.out.println("3. Mokesčių grąžinimas");
-//        System.out.println("4. Kita");
-//        int categoryChoice = scanner.nextInt();
-//        scanner.nextLine();
-//
-//        IncomeCategory incomeCategory;
-//        switch (categoryChoice) {
-//            case 1:
-//                incomeCategory = IncomeCategory.SALARY;
-//                break;
-//            case 2:
-//                incomeCategory = IncomeCategory.DIVIDENDS;
-//                break;
-//            case 3:
-//                incomeCategory = IncomeCategory.TAX_RETURN;
-//                break;
-//            case 4:
-//                incomeCategory = IncomeCategory.OTHERS;
-//                break;
-//            default:
-//                System.out.println("Neteisingas pasirinkimas. Naudojama numatytoji kategorija: OTHERS");
-//                incomeCategory = IncomeCategory.OTHERS;
-//                break;
-//        }
-//        System.out.println("Jūsų komentaras: ");
-//        String comment = scanner.nextLine();
-//        int counter = budgetService.getCounter() + 1;
-//        budgetService.setCounter(counter);
-//        final CommonRecord incomeCommonRecord = new IncomeRecord(id, amount,
-//                LocalDateTime.now(), comment, incomeCategory, incomeType);
-//        Map<Integer, List<CommonRecord>> incomeRecords = budgetService.getCommonRecords();
-//        incomeRecords.putIfAbsent(counter, new ArrayList<>());
-//        incomeRecords.get(counter).add(incomeCommonRecord);
+        System.out.println("Kurį įrašą norite pašalinti? ");
+        int selectedEntry = scanner.nextInt();
+        scanner.nextLine();
+        Map<Integer, List<CommonRecord>> records = budgetService.getCommonRecords();
+        if (records.containsKey(selectedEntry)) {
+              records.remove(selectedEntry);
+        } else {
+            System.out.println("Įrašas " + selectedEntry + " nerastas.");
+        }
     }
-    public void incomeRecordChange(int selectedEntry, IncomeRecord incomeRecord) {
+    public void incomeRecordChange(IncomeRecord incomeRecord) {
         BigDecimal incomeAmount = BigDecimal.ZERO;
         System.out.println("Ar norite pakeisti pajamų sumą T/N? ");
-        String recordCorrect = scanner.nextLine();
-        if ("T".equalsIgnoreCase(recordCorrect)) {
+        String amountCorrect = scanner.nextLine();
+        if ("T".equalsIgnoreCase(amountCorrect)) {
             System.out.println("Įveskite naują pajamų sumą: ");
             incomeAmount = scanner.nextBigDecimal();
             incomeRecord.setAmount(incomeAmount);
             scanner.nextLine();
         }
+        System.out.println("Ar norite pakeisti pajamų tipą T/N? ");
+        String typeCorrect = scanner.nextLine();
+        if ("T".equalsIgnoreCase(typeCorrect)) {
+            IncomeType incomeType = meniuIncome.fillIncomeRecordTypeField();
+            incomeRecord.setIncomeType(incomeType);
+            scanner.nextLine();
+        }
+        System.out.println("Ar norite pakeisti pajamų kategoriją T/N? ");
+        String categoryCorrect = scanner.nextLine();
+        if ("T".equalsIgnoreCase(categoryCorrect)) {
+            IncomeCategory incomeCategory = meniuIncome.fillIncomeRecordCategoryField();
+            incomeRecord.setIncomeCategory(incomeCategory);
+            scanner.nextLine();
+        }
+        System.out.println("Ar norite pakeisti komentarą T/N? ");
+        String commentCorrect = scanner.nextLine();
+        if ("T".equalsIgnoreCase(commentCorrect)) {
+            System.out.println("Komentaras(iki 20 simbolių): ");
+            String comment = scanner.nextLine();
+            comment = comment.substring(0, 20);
+            incomeRecord.setOtherInfo(comment);
+        }
     }
-    public void expenseRecordChange(int selectedEntry, ExpenseRecord expenseRecord) {
+    public void expenseRecordChange(ExpenseRecord expenseRecord) {
         BigDecimal expenseAmount = BigDecimal.ZERO;
         System.out.println("Ar norite pakeisti išlaidų sumą T/N? ");
         scanner.nextLine();
@@ -152,6 +128,26 @@ public class MeniuChange {
             System.out.println("Įveskite naują išlaidų sumą: ");
             expenseAmount = scanner.nextBigDecimal();
             expenseRecord.setAmount(expenseAmount);
+        }
+        System.out.println("Ar norite pakeisti išlaidų tipą T/N? ");
+        String typeCorrect = scanner.nextLine();
+        if ("T".equalsIgnoreCase(typeCorrect)) {
+            ExpenseType expenseType = meniuExpense.fillExpenceRecordTypeField();
+            expenseRecord.setExpenseType(expenseType);
+        }
+        System.out.println("Ar norite pakeisti išlaidų kategoriją T/N? ");
+        String categoryCorrect = scanner.nextLine();
+        if ("T".equalsIgnoreCase(categoryCorrect)) {
+            ExpenseCategory expenseCategory = meniuExpense.fillExpenceRecordCategoryField();
+            expenseRecord.setExpenseCategory(expenseCategory);
+        }
+        System.out.println("Ar norite pakeisti komentarą T/N? ");
+        String commentCorrect = scanner.nextLine();
+        if ("T".equalsIgnoreCase(commentCorrect)) {
+            System.out.println("Komentaras(iki 20 simbolių): ");
+            String comment = scanner.nextLine();
+            comment = comment.substring(0, 20);
+            expenseRecord.setOtherInfo(comment);
         }
     }
 }
