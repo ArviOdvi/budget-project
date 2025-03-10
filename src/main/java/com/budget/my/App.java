@@ -6,10 +6,9 @@ import java.util.Scanner;
 
 public class App {
 
-    public static void main(String[] args) throws InterruptedException{
+    public static void main(String[] args){
         Meniu meniu = new Meniu(new Scanner(System.in), new BudgetService());
         meniu.meniu();
 
     }
-
 }

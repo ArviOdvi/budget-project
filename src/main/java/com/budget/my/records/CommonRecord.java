@@ -2,10 +2,8 @@ package com.budget.my.records;
 
 import lombok.Getter;
 import lombok.Setter;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Getter
 public abstract class CommonRecord {

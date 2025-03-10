@@ -12,6 +12,7 @@ import java.util.Objects;
 @Setter
 @Getter
 public class IncomeRecord extends CommonRecord {
+
     private IncomeCategory incomeCategory;
     private IncomeType incomeType;
 

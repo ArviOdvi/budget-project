@@ -11,8 +11,7 @@ public class AppTest
 
 {
     @Test
-    public void testApp()
-    {
-        assertTrue( true );
+    public void testMainDoesNotThrowException() {
+        assertDoesNotThrow(() -> App.main(new String[]{}));
     }
 }
