@@ -24,13 +24,12 @@ public class MeniuExpense {
         String id = UniqueIdGenerator.generateUniqueId();
         System.out.print("\033[31mPrašome įvesti išlaidas EUR: \033[0m");
         BigDecimal amount = scanner.nextBigDecimal();
-        //amount = amount.multiply(BigDecimal.valueOf(-1));
         ExpenseType expenseType = fillExpenceRecordTypeField();
         ExpenseCategory expenseCategory = fillExpenceRecordCategoryField();
         scanner.nextLine();
         System.out.print("\033[31mJūsų komentaras(iki 20 simbolių): \033[0m");
         String comment = scanner.nextLine();
-        comment = comment.substring(0, 20);
+        comment = comment.substring(0, Math.min(comment.length(), 20));
         int counter = budgetService.getCounter()+1;
         budgetService.setCounter(counter);
         final ExpenseRecord expenseRecord = new ExpenseRecord(id,  amount,
@@ -50,11 +49,7 @@ public class MeniuExpense {
                             "-     2  Kortele              -\n" +
                             "-     3  Grynais              -\n" +
                             "-------------------------------\n\033[0m");
-            if (!scanner.hasNextInt()) {
-                System.out.println("Klaida! Prašome įvesti tik skaičių.");
-                scanner.next(); // Išvalome neteisingą įvestį
-                continue;  // Pereiname prie naujo ciklo
-            }
+        try {
             choice = scanner.nextInt();
             switch (choice) {
                 case 1: {
@@ -70,6 +65,10 @@ public class MeniuExpense {
                     System.out.println("Klaida! Prašome įvesti tik skaičius nuo 1 iki 4.");
                 }
             }
+        } catch (java.util.InputMismatchException e) {
+            System.out.println("Klaida! Prašome įvesti tik skaičių.");
+            scanner.next();
+        }
         }
     }
     public ExpenseCategory fillExpenceRecordCategoryField(){
@@ -86,11 +85,7 @@ public class MeniuExpense {
                             "-       5  Daiktams           -\n" +
                             "-       6  Kitam              -\n" +
                             "-------------------------------\n\033[0m");
-            if (!scanner.hasNextInt()) {
-                System.out.println("Klaida! Prašome įvesti tik skaičių.");
-                scanner.next(); // Išvalome neteisingą įvestį
-                continue;  // Pereiname prie naujo ciklo
-            }
+        try {
             choice = scanner.nextInt();
             switch (choice) {
                 case 1: {
@@ -115,6 +110,10 @@ public class MeniuExpense {
                     System.out.println("Klaida! Prašome įvesti tik skaičius nuo 1 iki 4.");
                 }
             }
+        } catch (java.util.InputMismatchException e) {
+            System.out.println("Klaida! Prašome įvesti tik skaičių.");
+            scanner.next();
+        }
         }
     }
 

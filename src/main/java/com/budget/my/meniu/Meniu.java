@@ -2,38 +2,40 @@ package com.budget.my.meniu;
 
 import com.budget.my.Budget;
 import com.budget.my.BudgetService;
-import com.budget.my.print.PrintExpenses;
-import com.budget.my.print.PrintIncomes;
+import com.budget.my.fileoperations.RecordsFileWriter;
+import com.budget.my.print.PrintExpensesAmount;
+import com.budget.my.print.PrintIncomesAmount;
 import com.budget.my.print.PrintRecords;
 import com.budget.my.records.CommonRecord;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 public class Meniu {
     private final Scanner scanner;
-    private final BudgetService budgetService; // Naudojame tą patį BudgetService egzempliorių
+    private final BudgetService budgetService;
     private final Budget budget;
-    private final MeniuIncome meniuIncome; // Perduodame BudgetService
+    private final MeniuIncome meniuIncome;
     private final MeniuExpense meniuExpense;
-    private final PrintIncomes printIncomes;
-    private final PrintExpenses printExpenses;
+    private final PrintIncomesAmount printIncomesAmount;
+    private final PrintExpensesAmount printExpensesAmount;
     private final PrintRecords printRecords;
     private final MeniuChange meniuChange;
+    private final RecordsFileWriter recordsFileWriter;
 
     public Meniu(Scanner scanner, BudgetService budgetService) {
         this.scanner = scanner;
         this.budgetService = budgetService;
-        this.printIncomes = new PrintIncomes(budgetService);
-        this.printExpenses = new PrintExpenses(budgetService);
+        this.printIncomesAmount = new PrintIncomesAmount(budgetService);
+        this.printExpensesAmount = new PrintExpensesAmount(budgetService);
         this.printRecords = new PrintRecords(budgetService);
         this.budget = new Budget(budgetService);
         this.meniuIncome = new MeniuIncome(scanner, budgetService);
         this.meniuExpense = new MeniuExpense(scanner, budgetService);
         this.meniuChange = new MeniuChange(budgetService, scanner);
+        this.recordsFileWriter = new RecordsFileWriter();
     }
-    public void meniu() throws InterruptedException {
+    public void meniu() {
 
         int choice;
         while (true) {
@@ -49,11 +51,7 @@ public class Meniu {
                                  "*       7 Koreguoti įrašus          *\n" +
                                  "*       8 Programos pabaiga         *\n" +
                                  "*************************************\n");
-            if (!scanner.hasNextInt()) {
-                System.out.println("Klaida! Prašome įvesti tik skaičių.");
-                scanner.next(); // Išvalome neteisingą įvestį
-                continue;  // Pereiname prie naujo ciklo
-            }
+         try {
             choice = scanner.nextInt();
             switch (choice) {
                 case 1: {
@@ -65,11 +63,11 @@ public class Meniu {
                     break;
                 }
                 case 3: {
-                    System.out.println("\033[32mVisos pajamos: " + printIncomes.printIncomes() + "\033[0m\n");
+                    System.out.println("\033[32mVisos pajamos: " + printIncomesAmount.printIncomes() + "\033[0m\n");
                     break;
                 }
                 case 4: {
-                    System.out.println("\033[31mVisos išlaidos: " + printExpenses.printExpenses() + "\033[0m\n");
+                    System.out.println("\033[31mVisos išlaidos: " + printExpensesAmount.printExpenses() + "\033[0m\n");
                     break;
                 }
                 case 5: {
@@ -87,24 +85,17 @@ public class Meniu {
                     break;
                 }
                 case 8: {
-                    Map<Integer, List<CommonRecord>> commonRecords = budgetService.getCommonRecords();
-                    Map<Integer, List<CommonRecord>> newRecords = reindexRecords(commonRecords);
-                    budgetService.setCommonRecords(newRecords);
-                    budgetService.saveRecords("records.json");
+                    Map<Integer, List<CommonRecord>> newRecords = budgetService.reindexRecords();
+                    recordsFileWriter.saveRecords("records.json", newRecords);
                     return;
                 }
                 default: { System.out.println("Klaida! Prašome įvesti tik skaičius nuo 1 iki 8 ");
                 }
             }
+         } catch (java.util.InputMismatchException e) {
+             System.out.println("Klaida! Prašome įvesti tik skaičių.");
+             scanner.next();
+         }
         }
-    }
-    public Map<Integer, List<CommonRecord>> reindexRecords(Map<Integer, List<CommonRecord>> commonRecords){
-        Map<Integer, List<CommonRecord>> newRecords = new HashMap<>();
-        int newCounter = 1;
-        for (List<CommonRecord> records : commonRecords.values()) {
-            newRecords.put(newCounter, records);
-            newCounter++;
-        }
-        return newRecords;
     }
 }

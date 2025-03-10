@@ -7,9 +7,7 @@ import java.util.Scanner;
 public class App {
 
     public static void main(String[] args) throws InterruptedException{
-        BudgetService budgetService = new BudgetService();
-        Scanner scanner = new Scanner(System.in);
-        Meniu meniu = new Meniu(scanner, budgetService);
+        Meniu meniu = new Meniu(new Scanner(System.in), new BudgetService());
         meniu.meniu();
 
     }

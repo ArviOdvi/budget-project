@@ -6,9 +6,9 @@ import com.budget.my.records.IncomeRecord;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
-public class PrintIncomes {
+public class PrintIncomesAmount {
     private final BudgetService budgetService;
-    public PrintIncomes(BudgetService budgetService) {
+    public PrintIncomesAmount(BudgetService budgetService) {
         this.budgetService = budgetService;
     }
     public BigDecimal printIncomes() {

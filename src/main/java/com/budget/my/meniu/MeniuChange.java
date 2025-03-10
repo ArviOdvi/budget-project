@@ -9,13 +9,10 @@ import com.budget.my.print.PrintRecords;
 import com.budget.my.records.CommonRecord;
 import com.budget.my.records.ExpenseRecord;
 import com.budget.my.records.IncomeRecord;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-
-
 
 public class MeniuChange {
     private final BudgetService budgetService;
@@ -31,6 +28,7 @@ public class MeniuChange {
         this.meniuIncome = new MeniuIncome(scanner,budgetService);
         this.meniuExpense = new MeniuExpense(scanner, budgetService);
     }
+
     public void meniuChange(){
         boolean continueEditing = true;
         while(continueEditing) {
@@ -54,6 +52,7 @@ public class MeniuChange {
             }
         }
     }
+
     public void changeRecord(){
         System.out.println("Kurį įrašą redaguosit? ");
         int selectedEntry = scanner.nextInt();
@@ -62,7 +61,7 @@ public class MeniuChange {
         if (records.containsKey(selectedEntry)) {
             List<CommonRecord> recordList = records.get(selectedEntry);
             if (recordList != null && !recordList.isEmpty()) {
-                CommonRecord record = recordList.get(0); // Gauname pirmą įrašą iš sąrašo
+                CommonRecord record = recordList.getFirst();
                 if (record instanceof IncomeRecord) {
                     incomeRecordChange((IncomeRecord) record);
                 } else if (record instanceof ExpenseRecord) {
@@ -75,6 +74,7 @@ public class MeniuChange {
             System.out.println("Įrašas " + selectedEntry + " nerastas.");
         }
     }
+
     public void deleteRecord(){
         System.out.println("Kurį įrašą norite pašalinti? ");
         int selectedEntry = scanner.nextInt();
@@ -86,6 +86,7 @@ public class MeniuChange {
             System.out.println("Įrašas " + selectedEntry + " nerastas.");
         }
     }
+
     public void incomeRecordChange(IncomeRecord incomeRecord) {
         BigDecimal incomeAmount = BigDecimal.ZERO;
         System.out.println("Ar norite pakeisti pajamų sumą T/N? ");
@@ -115,10 +116,11 @@ public class MeniuChange {
         if ("T".equalsIgnoreCase(commentCorrect)) {
             System.out.println("Komentaras(iki 20 simbolių): ");
             String comment = scanner.nextLine();
-            comment = comment.substring(0, 20);
+            comment = comment.substring(0, Math.min(comment.length(), 20));
             incomeRecord.setOtherInfo(comment);
         }
     }
+
     public void expenseRecordChange(ExpenseRecord expenseRecord) {
         BigDecimal expenseAmount = BigDecimal.ZERO;
         System.out.println("Ar norite pakeisti išlaidų sumą T/N? ");

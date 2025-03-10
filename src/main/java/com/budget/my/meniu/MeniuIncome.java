@@ -14,11 +14,12 @@ import java.util.*;
 public class MeniuIncome {
     private final Scanner scanner;
     private final BudgetService budgetService;
+
     public MeniuIncome(Scanner scanner, BudgetService budgetService) {
         this.scanner = scanner;
         this.budgetService = budgetService;
-
     }
+
     public void fillIncomeRecord() {
         String id = UniqueIdGenerator.generateUniqueId();
         System.out.print("\033[32mPrašome įvesti pajamas EUR: \033[0m");
@@ -28,7 +29,7 @@ public class MeniuIncome {
         scanner.nextLine();
         System.out.print("\033[32mJūsų komentaras(iki 20 simbolių): \033[0m");
         String comment = scanner.nextLine();
-        comment = comment.substring(0, 20);
+        comment = comment.substring(0, Math.min(comment.length(), 20));
         int counter = budgetService.getCounter() + 1;
         budgetService.setCounter(counter);
         final CommonRecord incomeRecord = new IncomeRecord(id, amount,
@@ -37,6 +38,7 @@ public class MeniuIncome {
         incomeRecords.putIfAbsent(counter, new ArrayList<>());
         incomeRecords.get(counter).add(incomeRecord);
     }
+
     public IncomeType fillIncomeRecordTypeField() {
         int choice;
         while (true) {
@@ -47,28 +49,25 @@ public class MeniuIncome {
                             "+       1 Į sąskaitą           +\n" +
                             "+       2 Grynais              +\n" +
                             "++++++++++++++++++++++++++++++++\n\033[0m");
-            if (!scanner.hasNextInt()) {
+            try {
+                choice = scanner.nextInt();
+                switch (choice) {
+                    case 1:
+                        return IncomeType.BANK_TRANSFER;
+                    case 2:
+                        return IncomeType.CASH;
+                    default:
+                        System.out.println("Klaida! Prašome įvesti tik skaičius 1 arba 2.");
+                }
+            } catch (java.util.InputMismatchException e) {
                 System.out.println("Klaida! Prašome įvesti tik skaičių.");
-                scanner.next(); // Išvalome neteisingą įvestį
-                continue;  // Pereiname prie naujo ciklo
-            }
-            choice =   scanner.nextInt();
-            switch (choice) {
-                case 1: {
-                    return IncomeType.BANK_TRANSFER;
-                }
-                case 2: {
-                    return IncomeType.CASH;
-                }
-                default: {
-                    System.out.println("Klaida! Prašome įvesti tik skaičius nuo 1 iki 2");
-                }
+                scanner.next();
             }
         }
     }
     public IncomeCategory fillIncomeRecordCategoryField(){
         int choice;
-          while (true) {
+        while (true) {
             System.out.println(
             "\033[32m++++++++++++++++++++++++++++++++++++\n" +
                     "+      PAJAMŲ KATEGORIJA           +\n" +
@@ -79,11 +78,7 @@ public class MeniuIncome {
                     "+       4 Parduoti daiktai         +\n" +
                     "+       5 Kita                     +\n" +
                     "++++++++++++++++++++++++++++++++++++\n\033[0m");
-            if (!scanner.hasNextInt()) {
-                System.out.println("Klaida! Prašome įvesti tik skaičių.");
-                scanner.next();
-                continue;
-            }
+          try {
             choice =   scanner.nextInt();
             switch (choice) {
                 case 1: {
@@ -105,6 +100,10 @@ public class MeniuIncome {
                     System.out.println("Klaida! Prašome įvesti tik skaičius nuo 1 iki 3.");
                 }
             }
+          } catch (java.util.InputMismatchException e) {
+                  System.out.println("Klaida! Prašome įvesti tik skaičių.");
+                  scanner.next();
+          }
         }
     }
 }

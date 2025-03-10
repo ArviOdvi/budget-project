@@ -7,10 +7,10 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
-public class PrintExpenses {
+public class PrintExpensesAmount {
     private final BudgetService budgetService;
 
-    public PrintExpenses(BudgetService budgetService) {
+    public PrintExpensesAmount(BudgetService budgetService) {
         this.budgetService = budgetService;
     }
     public BigDecimal printExpenses() {

@@ -21,7 +21,6 @@ public class PrintRecords {
         Map<Integer, List<CommonRecord>> recordsMap = budgetService.getCommonRecords();
         if (recordsMap.isEmpty()) {
             System.out.println("Įrašų nerasta.");
-            return;
         } else {
             System.out.println("\033[33m+------------+--------------------+---------------------+-----------------+------------------+---------------------+---------------------+\033[0m");
             System.out.println("\033[33m| Įrašas     |         ID         |        Suma         |      Tipas      |    Kategorija    |    Komentaras       |         Data        |\033[0m");
@@ -46,7 +45,6 @@ public class PrintRecords {
                 }
 
             }
-
             System.out.println("\033[33m+------------+--------------------+---------------------+-----------------+------------------+---------------------+---------------------+\n\033[0m");
         }
     }

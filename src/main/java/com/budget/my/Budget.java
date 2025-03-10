@@ -1,17 +1,17 @@
 package com.budget.my;
 
-import com.budget.my.print.PrintExpenses;
-import com.budget.my.print.PrintIncomes;
+import com.budget.my.print.PrintExpensesAmount;
+import com.budget.my.print.PrintIncomesAmount;
 
 public class Budget {
-    private final PrintIncomes printIncomes;
-    private final PrintExpenses printExpenses;
+    private final PrintIncomesAmount printIncomesAmount;
+    private final PrintExpensesAmount printExpensesAmount;
 
     public Budget(BudgetService budgetService) {
-        this.printIncomes = new PrintIncomes(budgetService);
-        this.printExpenses = new PrintExpenses(budgetService);
+        this.printIncomesAmount = new PrintIncomesAmount(budgetService);
+        this.printExpensesAmount = new PrintExpensesAmount(budgetService);
     }
     public void balance(){
-       System.out.println("Balansas: " + printIncomes.printIncomes().subtract(printExpenses.printExpenses()) + "\n");
+       System.out.println("Balansas: " + printIncomesAmount.printIncomes().subtract(printExpensesAmount.printExpenses()) + "\n");
     }
 }

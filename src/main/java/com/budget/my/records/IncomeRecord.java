@@ -2,20 +2,23 @@ package com.budget.my.records;
 
 import com.budget.my.enum_data.IncomeCategory;
 import com.budget.my.enum_data.IncomeType;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+@Setter
+@Getter
 public class IncomeRecord extends CommonRecord {
     private IncomeCategory incomeCategory;
     private IncomeType incomeType;
 
     public IncomeRecord(String id, BigDecimal amount, LocalDateTime date, String otherInfo, IncomeCategory incomeCategory, IncomeType incomeType) {
-        super(id, amount, date, otherInfo); // Kreipiamės į tėvinės klasės konstruktorių
+        super(id, amount, date, otherInfo);
 
-        // Validacija naujiems laukams
-        if (incomeCategory == null || incomeCategory.toString().isBlank()) {
+         if (incomeCategory == null || incomeCategory.toString().isBlank()) {
             throw new IllegalArgumentException("Pajamos kategorija negali būti tuščia.");
         }
         if (incomeType == null || incomeType.toString().isBlank()) {
@@ -26,34 +29,9 @@ public class IncomeRecord extends CommonRecord {
         this.incomeType = incomeType;
     }
 
-    public IncomeCategory getIncomeCategory() {
-
-        return incomeCategory;
-    }
-
-    public IncomeType getIncomeType() {
-        return incomeType;
-    }
-    public void setIncomeCategory(IncomeCategory incomeCategory) {
-        this.incomeCategory = incomeCategory;
-    }
-
-    public void setIncomeType(IncomeType incomeType) {
-        this.incomeType = incomeType;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false; // Svarbu palyginti ir su tėvinės klasės equals()
-        IncomeRecord that = (IncomeRecord) o;
-        return Objects.equals(incomeCategory, that.incomeCategory) && Objects.equals(incomeType, that.incomeType);
-    }
-
     @Override
     public int hashCode() {
-        int result = super.hashCode(); // Svarbu įtraukti ir tėvinės klasės hashCode()
+        int result = super.hashCode();
         result = 31 * result + Objects.hash(incomeCategory);
         result = 31 * result + Objects.hash(incomeType);
         return result;
@@ -62,7 +40,7 @@ public class IncomeRecord extends CommonRecord {
     @Override
     public String toString() {
         return "IncomeRecord{" +
-                "id=" + getId() + // Naudojame getter'į iš tėvinės klasės
+                "id=" + getId() +
                 ", amount=" + getAmount() +
                 ", date=" + getDate() +
                 ", otherInfo='" + getOtherInfo() + '\'' +
