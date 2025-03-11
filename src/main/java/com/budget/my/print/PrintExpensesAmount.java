@@ -1,8 +1,8 @@
 package com.budget.my.print;
 
 import com.budget.my.BudgetService;
-import com.budget.my.records.CommonRecord;
-import com.budget.my.records.ExpenseRecord;
+import com.budget.my.records_setting.CommonRecord;
+import com.budget.my.records_setting.ExpenseRecord;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +13,7 @@ public class PrintExpensesAmount {
     public PrintExpensesAmount(BudgetService budgetService) {
         this.budgetService = budgetService;
     }
-    public BigDecimal printExpenses() {
+    public BigDecimal printExpensesAmount() {
         BigDecimal expenseAmount = BigDecimal.ZERO;
         Map<Integer, List<CommonRecord>> records = budgetService.getCommonRecords();
         for (List<CommonRecord> commonRecordList : records.values()) {

@@ -1,4 +1,4 @@
-package com.budget.my.records;
+package com.budget.my.records_setting;
 
 import com.budget.my.enum_data.ExpenseCategory;
 import com.budget.my.enum_data.ExpenseType;

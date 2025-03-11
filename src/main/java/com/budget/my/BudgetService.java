@@ -1,7 +1,7 @@
 package com.budget.my;
 
 import com.budget.my.fileoperations.RecordsFileReader;
-import com.budget.my.records.CommonRecord;
+import com.budget.my.records_setting.CommonRecord;
 import lombok.Getter;
 import lombok.Setter;
 

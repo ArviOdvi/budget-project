@@ -3,10 +3,9 @@ package com.budget.my.meniu;
 import com.budget.my.*;
 import com.budget.my.enum_data.ExpenseCategory;
 import com.budget.my.enum_data.ExpenseType;
-import com.budget.my.records.CommonRecord;
-import com.budget.my.records.ExpenseRecord;
+import com.budget.my.records_setting.CommonRecord;
+import com.budget.my.records_setting.ExpenseRecord;
 import com.budget.my.utils.UniqueIdGenerator;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -14,20 +13,26 @@ import java.util.*;
 public class MeniuExpense {
     private final Scanner scanner;
     private final BudgetService budgetService;
-
+    private final String colorOn = "\033[31m";
+    private final String colorOff = "\033[0m";
     public MeniuExpense(Scanner scanner, BudgetService budgetService) {
         this.scanner = scanner;
         this.budgetService = budgetService;
     }
     public void fillExpenceRecordFields() {
-
+        BigDecimal amount = BigDecimal.ZERO;
         String id = UniqueIdGenerator.generateUniqueId();
-        System.out.print("\033[31mPrašome įvesti išlaidas EUR: \033[0m");
-        BigDecimal amount = scanner.nextBigDecimal();
+        System.out.print(colorOn + "Prašome įvesti išlaidas EUR: " + colorOff);
+        try {
+            amount = scanner.nextBigDecimal();
+        } catch (NumberFormatException e) {
+            System.out.println("Neteisinga įvestis. Įveskite tik skaičių.");
+            scanner.nextLine();
+        }
         ExpenseType expenseType = fillExpenceRecordTypeField();
         ExpenseCategory expenseCategory = fillExpenceRecordCategoryField();
         scanner.nextLine();
-        System.out.print("\033[31mJūsų komentaras(iki 20 simbolių): \033[0m");
+        System.out.print(colorOn + "Jūsų komentaras(iki 20 simbolių): " + colorOff);
         String comment = scanner.nextLine();
         comment = comment.substring(0, Math.min(comment.length(), 20));
         int counter = budgetService.getCounter()+1;
@@ -42,13 +47,13 @@ public class MeniuExpense {
         int choice;
         while (true) {
             System.out.println (
-                    "\033[31m-------------------------------\n" +
-                            "-           IŠLAIDOS          -\n" +
-                            "-------------------------------\n" +
-                            "-     1  Iš sąskaitos         -\n" +
-                            "-     2  Kortele              -\n" +
-                            "-     3  Grynais              -\n" +
-                            "-------------------------------\n\033[0m");
+                    colorOn + "-------------------------------\n" +
+                              "-           IŠLAIDOS          -\n" +
+                              "-------------------------------\n" +
+                              "-     1  Iš sąskaitos         -\n" +
+                              "-     2  Kortele              -\n" +
+                              "-     3  Grynais              -\n" +
+                              "-------------------------------\n" + colorOff);
         try {
             choice = scanner.nextInt();
             switch (choice) {
@@ -66,7 +71,7 @@ public class MeniuExpense {
                 }
             }
         } catch (java.util.InputMismatchException e) {
-            System.out.println("Klaida! Prašome įvesti tik skaičių.");
+            System.out.println("Klaida! Prašome įvesti tik sveiką skaičių nuo 1 ik 4.");
             scanner.next();
         }
         }
@@ -75,16 +80,16 @@ public class MeniuExpense {
         int choice;
         while (true) {
             System.out.println(
-                    "\033[31m-------------------------------\n" +
-                            "-    IŠLAIDŲ KATEGORIJA       -\n" +
-                            "-------------------------------\n" +
-                            "-       1  Mokesčiams         -\n" +
-                            "-       2  Nuomai             -\n" +
-                            "-       3  Lizingui           -\n" +
-                            "-       4  Maistui            -\n" +
-                            "-       5  Daiktams           -\n" +
-                            "-       6  Kitam              -\n" +
-                            "-------------------------------\n\033[0m");
+                    colorOn + "-------------------------------\n" +
+                              "-    IŠLAIDŲ KATEGORIJA       -\n" +
+                              "-------------------------------\n" +
+                              "-       1  Mokesčiams         -\n" +
+                              "-       2  Nuomai             -\n" +
+                              "-       3  Lizingui           -\n" +
+                              "-       4  Maistui            -\n" +
+                              "-       5  Daiktams           -\n" +
+                              "-       6  Kitam              -\n" +
+                              "-------------------------------\n" + colorOff);
         try {
             choice = scanner.nextInt();
             switch (choice) {
@@ -111,7 +116,7 @@ public class MeniuExpense {
                 }
             }
         } catch (java.util.InputMismatchException e) {
-            System.out.println("Klaida! Prašome įvesti tik skaičių.");
+            System.out.println("Klaida! Prašome įvesti tik sveiką skaičių nuo 1 iki 4.");
             scanner.next();
         }
         }

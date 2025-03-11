@@ -1,9 +1,9 @@
 package com.budget.my.print;
 
 import com.budget.my.BudgetService;
-import com.budget.my.records.CommonRecord;
-import com.budget.my.records.ExpenseRecord;
-import com.budget.my.records.IncomeRecord;
+import com.budget.my.records_setting.CommonRecord;
+import com.budget.my.records_setting.ExpenseRecord;
+import com.budget.my.records_setting.IncomeRecord;
 
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
@@ -18,13 +18,15 @@ public class PrintRecords {
     }
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     public void printRecords() {
+        String tableColorOn = "\033[33m";
+        String tableColorOff = "\033[0m";
         Map<Integer, List<CommonRecord>> recordsMap = budgetService.getCommonRecords();
         if (recordsMap.isEmpty()) {
             System.out.println("Įrašų nerasta.");
         } else {
-            System.out.println("\033[33m+------------+--------------------+---------------------+-----------------+------------------+---------------------+---------------------+\033[0m");
-            System.out.println("\033[33m| Įrašas     |         ID         |        Suma         |      Tipas      |    Kategorija    |    Komentaras       |         Data        |\033[0m");
-            System.out.println("\033[33m+------------+--------------------+---------------------+-----------------+------------------+---------------------+---------------------+\033[0m");
+            System.out.println(tableColorOn + "+------------+--------------------+---------------------+-----------------+------------------+---------------------+---------------------+" + tableColorOff);
+            System.out.println(tableColorOn + "| Įrašas     |         ID         |        Suma         |      Tipas      |    Kategorija    |    Komentaras       |         Data        |" + tableColorOff);
+            System.out.println(tableColorOn + "+------------+--------------------+---------------------+-----------------+------------------+---------------------+---------------------+" + tableColorOff);
 
             for (Map.Entry<Integer, List<CommonRecord>> entry : recordsMap.entrySet()) {
                 Integer key = entry.getKey();
@@ -33,19 +35,19 @@ public class PrintRecords {
                     String formattedDate = record.getDate() != null ? record.getDate().format(formatter) : "null";
                     if(record instanceof IncomeRecord){
                         IncomeRecord incomeRecord = (IncomeRecord) record;
-                        System.out.printf("\033[33m| %-10d | %-18s | %-19s | %-15s |%-17s | %-19s | %-13s |\n\033[0m",
+                        System.out.printf(tableColorOn + "| %-10d | %-18s | %-19s | %-15s |%-17s | %-19s | %-13s |\n" + tableColorOff,
                             key, incomeRecord.getId(), incomeRecord.getAmount(), incomeRecord.getIncomeType(),
                                 incomeRecord.getIncomeCategory(),incomeRecord.getOtherInfo(),formattedDate);
                     } else {
                         ExpenseRecord expenseRecord = (ExpenseRecord) record;
-                        System.out.printf("\033[33m| %-10d | %-18s | %-19s | %-15s |%-17s | %-19s | %-13s |\n\033[0m",
+                        System.out.printf(tableColorOn + "| %-10d | %-18s | %-19s | %-15s |%-17s | %-19s | %-13s |\n" + tableColorOff,
                                 key, expenseRecord.getId(), expenseRecord.getAmount().multiply(BigDecimal.valueOf(-1)), expenseRecord.getExpenseType(),
                                 expenseRecord.getExpenseCategory(),expenseRecord.getOtherInfo(),formattedDate);
                     }
                 }
 
             }
-            System.out.println("\033[33m+------------+--------------------+---------------------+-----------------+------------------+---------------------+---------------------+\n\033[0m");
+            System.out.println(tableColorOn + "+------------+--------------------+---------------------+-----------------+------------------+---------------------+---------------------+\n" + tableColorOff);
         }
     }
 }

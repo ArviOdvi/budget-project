@@ -1,6 +1,6 @@
 package com.budget.my.fileoperations;
 
-import com.budget.my.records.CommonRecord;
+import com.budget.my.records_setting.CommonRecord;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;

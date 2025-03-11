@@ -1,8 +1,8 @@
 package com.budget.my.print;
 
 import com.budget.my.BudgetService;
-import com.budget.my.records.CommonRecord;
-import com.budget.my.records.IncomeRecord;
+import com.budget.my.records_setting.CommonRecord;
+import com.budget.my.records_setting.IncomeRecord;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +11,7 @@ public class PrintIncomesAmount {
     public PrintIncomesAmount(BudgetService budgetService) {
         this.budgetService = budgetService;
     }
-    public BigDecimal printIncomes() {
+    public BigDecimal printIncomesAmount() {
         BigDecimal incomeAmount = BigDecimal.ZERO;
         Map<Integer, List<CommonRecord>> records = budgetService.getCommonRecords();
         for (List<CommonRecord> commonRecordList : records.values()) {

@@ -1,4 +1,4 @@
-package com.budget.my.records;
+package com.budget.my.records_setting;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -6,7 +6,7 @@ import com.budget.my.fileoperations.RecordsFileWriter;
 import com.budget.my.print.PrintExpensesAmount;
 import com.budget.my.print.PrintIncomesAmount;
 import com.budget.my.print.PrintRecords;
-import com.budget.my.records.CommonRecord;
+import com.budget.my.records_setting.CommonRecord;
 
 import java.util.List;
 import java.util.Map;
@@ -44,8 +44,8 @@ public class Meniu {
                                  "*************************************\n" +
                                  "*       1 Įvesti pajamas            *\n" +
                                  "*       2 Įvesti išlaidas           *\n" +
-                                 "*       3 Visos pajamos             *\n" +
-                                 "*       4 Visos išlaidos            *\n" +
+                                 "*       3 Visų pajamų suma          *\n" +
+                                 "*       4 Visų išlaidų suma         *\n" +
                                  "*       5 Balansas                  *\n" +
                                  "*       6 Parodyti visus įrašus     *\n" +
                                  "*       7 Koreguoti įrašus          *\n" +
@@ -63,11 +63,11 @@ public class Meniu {
                     break;
                 }
                 case 3: {
-                    System.out.println("\033[32mVisos pajamos: " + printIncomesAmount.printIncomes() + "\033[0m\n");
+                    System.out.println("\033[32mVisos pajamos: " + printIncomesAmount.printIncomesAmount() + "\033[0m\n");
                     break;
                 }
                 case 4: {
-                    System.out.println("\033[31mVisos išlaidos: " + printExpensesAmount.printExpenses() + "\033[0m\n");
+                    System.out.println("\033[31mVisos išlaidos: " + printExpensesAmount.printExpensesAmount() + "\033[0m\n");
                     break;
                 }
                 case 5: {

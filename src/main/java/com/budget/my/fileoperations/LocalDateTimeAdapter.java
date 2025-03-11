@@ -7,12 +7,13 @@ import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class LocalDateTimeAdapter extends TypeAdapter<LocalDateTime>{
-        private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"); // Jūsų datos/laiko formatas
+        private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
-        @Override  // @Override anotacija yra gera praktika
-        public void write(JsonWriter out, LocalDateTime dateTime) throws IOException { // write() metodo įgyvendinimas
+        @Override
+        public void write(JsonWriter out, LocalDateTime dateTime) throws IOException {
             if (dateTime == null) {
                 out.nullValue();
             } else {
@@ -20,7 +21,7 @@ public class LocalDateTimeAdapter extends TypeAdapter<LocalDateTime>{
             }
         }
 
-        @Override // Taip pat turite įgyvendinti read() metodą
+        @Override
         public LocalDateTime read(JsonReader in) throws IOException {
             switch (in.peek()) {
                 case NULL:
@@ -28,7 +29,11 @@ public class LocalDateTimeAdapter extends TypeAdapter<LocalDateTime>{
                     return null;
                 default:
                     String dateTimeString = in.nextString();
-                    return LocalDateTime.parse(dateTimeString, formatter);
+                    try {
+                        return LocalDateTime.parse(dateTimeString, formatter);
+                    } catch (DateTimeParseException e) {
+                        throw new IOException("Neteisingas datos formatas JSON'e: " + dateTimeString, e);
+                    }
             }
         }
-};
+}
